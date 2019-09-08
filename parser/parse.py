@@ -1,5 +1,6 @@
 import codecs
 import xlwt
+import re
 
 
 class Parse(object):
@@ -8,6 +9,7 @@ class Parse(object):
         self.filename = filename
         self.save_name = save_name
         self.shop_code = shop_code
+        self.re_extract_code = re.compile(r'\d{13}')
 
     def do_parse(self):
         we_need = ['订单编号', '买家实际支付金额', '收货人姓名', '收货地址', '联系手机', '宝贝总数量', '店铺名称', '宝贝标题', ]
@@ -59,7 +61,12 @@ class Parse(object):
             worksheet.write(count, 0, erp['shop_name'])
             worksheet.write(count, 1, erp['order'])
             worksheet.write(count, 2, erp['order'])
-            worksheet.write(count, 5, self.title_parse(erp['title']))
+            title = self.title_parse(erp['title'])
+            erp_code, ok = self.extract_erp_code(title)
+            if ok:
+                worksheet.write(count, 3, '%s0101' % erp_code)
+                worksheet.write(count, 4, erp_code)
+            worksheet.write(count, 5, title)
             worksheet.write(count, 6, erp['quantity'])
             worksheet.write(count, 7, '%.2f' % (float(erp['real_amount']) / float(erp['quantity'])))
             worksheet.write(count, 8, erp['real_amount'])
@@ -86,3 +93,8 @@ class Parse(object):
     def replace(cls, word: str):
         return word.strip('=').strip('"').strip(' ')
 
+    def extract_erp_code(self, title: str) -> (str, bool):
+        match = self.re_extract_code.findall(title)
+        if match:
+            return match[0], True
+        return None, False
