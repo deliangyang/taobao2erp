@@ -6,7 +6,7 @@ class MyTestCase(unittest.TestCase):
 
     def test_something(self):
         parse = Parse('ExportOrderList201909081324.csv', 'xxx.xlsx', 'xxxx')
-        parse.deal_with()
+        parse.do_parse()
         self.assertEqual(True, True)
 
 

@@ -1,5 +1,4 @@
 import codecs
-
 import xlwt
 
 
@@ -8,9 +7,9 @@ class Parse(object):
     def __init__(self, filename: str, save_name: str, shop_code: str):
         self.filename = filename
         self.save_name = save_name
-        self.shop_code = shop_code or '38B71E5310DF46F08360D8BAC4E32E54'
+        self.shop_code = shop_code
 
-    def deal_with(self):
+    def do_parse(self):
         we_need = ['订单编号', '买家实际支付金额', '收货人姓名', '收货地址', '联系手机', '宝贝总数量', '店铺名称', '宝贝标题', ]
         name = ['order', 'real_amount', 'username', 'address', 'mobile', 'quantity', 'shop_name', 'title',
                 'province', 'city', 'county']
