@@ -1,0 +1,5 @@
+xlwt
+xlrd
+pandas
+wxPython
+PyInstaller
