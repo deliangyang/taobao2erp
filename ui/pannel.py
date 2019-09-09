@@ -2,7 +2,7 @@ import wx
 import os
 import sys
 import datetime
-from parser.work_thread import ParseThread
+from parse.work_thread import ParseThread
 
 
 class MainPanel(wx.Panel):
