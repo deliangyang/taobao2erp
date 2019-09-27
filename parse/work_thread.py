@@ -1,5 +1,5 @@
 import threading
-from parser.parse import Parse
+from parse.parse import Parse
 
 
 class ParseThread(threading.Thread):
