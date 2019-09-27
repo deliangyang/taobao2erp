@@ -69,7 +69,7 @@ class MainPanel(wx.Panel):
             os.makedirs(dirname)
         return os.path.join(
             dirname,
-            (str(datetime.datetime.now()) + '.xlsx').replace(' ', '-').replace(':', '')
+            (str(datetime.datetime.now()) + '.xls').replace(' ', '-').replace(':', '')
         )
 
     def after_parse(self, message: str, state: str):
