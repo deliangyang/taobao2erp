@@ -13,6 +13,14 @@ class Parse(object):
         self.we_need = ['订单编号', '买家实际支付金额', '收货人姓名', '收货地址', '联系手机', '宝贝总数量', '店铺名称', '宝贝标题', ]
         self.name = ['order', 'real_amount', 'username', 'address', 'mobile', 'quantity', 'shop_name', 'title',
                 'province', 'city', 'county']
+        self.warning = xlwt.easyxf('pattern: pattern solid, fore_colour pink;')
+
+        self.key_map = [
+            'shop_name', 'order', 'order', 'erp_code0101', 'erp_code', 'title',
+            'quantity', 'price', 'real_amount', 'real_amount',
+            '', '', '', '', 'province', 'city', 'county', 'address',
+            'username', 'mobile', 'shop_code',
+        ]
 
     def read(self, filename, encoding):
         result = []
@@ -68,27 +76,24 @@ class Parse(object):
         for erp in result:
             title = self.title_parse(erp['title'])
             titles = title.split('，')
-            for title in titles:
+            style = xlwt.Style.default_style
+            if len(titles) > 1:
+                style = self.warning
+            for (index, title) in enumerate(titles):
                 # 懒得一一映射关系了
-                worksheet.write(count, 0, erp['shop_name'])
-                worksheet.write(count, 1, erp['order'])
-                worksheet.write(count, 2, erp['order'])
+                erp['title'] = title
+                erp['shop_code'] = self.shop_code
+                erp['mobile'] = erp['mobile'].strip("'")
+                erp['price'] = '%.2f' % (float(erp['real_amount']) / float(erp['quantity']))
                 erp_code, ok = self.extract_erp_code(title)
                 if ok:
-                    worksheet.write(count, 3, '%s0101' % erp_code)
-                    worksheet.write(count, 4, erp_code)
-                worksheet.write(count, 5, title)
-                worksheet.write(count, 6, erp['quantity'])
-                worksheet.write(count, 7, '%.2f' % (float(erp['real_amount']) / float(erp['quantity'])))
-                worksheet.write(count, 8, erp['real_amount'])
-                worksheet.write(count, 9, erp['real_amount'])
-                worksheet.write(count, 14, erp['province'])
-                worksheet.write(count, 15, erp['city'])
-                worksheet.write(count, 16, erp['county'])
-                worksheet.write(count, 17, erp['address'])
-                worksheet.write(count, 18, erp['username'])
-                worksheet.write(count, 19, erp['mobile'].strip("'"))
-                worksheet.write(count, 20, self.shop_code)
+                    erp['erp_code0101'] = '%s0101' % erp_code
+                    erp['erp_code'] = erp_code
+                for (idx, key) in enumerate(self.key_map):
+                    content = ''
+                    if key and key in erp:
+                        content = erp[key]
+                    worksheet.write(count, idx, content, style)
                 count += 1
         workbook.save(self.save_name)
 
