@@ -1,14 +1,16 @@
 import codecs
 import xlwt
 import re
+import openpyxl
 
 
 class Parse(object):
 
-    def __init__(self, filename: str, save_name: str, shop_code: str):
+    def __init__(self, filename: str, save_name: str, shop_code: str, password: str):
         self.filename = filename
         self.save_name = save_name
         self.shop_code = shop_code
+        self.password = password
         self.re_extract_code = re.compile(r'\d{13}')
         self.we_need = ['订单编号', '买家实际支付金额', '收货人姓名', '收货地址', '联系手机', '宝贝总数量', '店铺名称', '宝贝标题', ]
         self.name = ['order', 'real_amount', 'username', 'address', 'mobile', 'quantity', 'shop_name', 'title',
@@ -22,7 +24,18 @@ class Parse(object):
             'username', 'mobile', 'shop_code',
         ]
 
-    def read(self, filename, encoding):
+    def read_excel(self, filename):
+        try:
+            result = []
+            workbook = openpyxl.load_workbook(filename)
+            print(2)
+            workbook.security.workbookPassword = self.password
+            print(3)
+        except Exception as e:
+            print(e)
+        return result
+
+    def read_csv(self, filename, encoding):
         result = []
         with codecs.open(filename, 'r', encoding=encoding) as f:
             count = 0
@@ -51,6 +64,12 @@ class Parse(object):
                     result.append(temp)
         return result
 
+    def read(self, filename, encoding):
+        if filename.endswith('.csv'):
+            return self.read_csv(filename, encoding)
+        else:
+            return self.read_excel(filename)
+
     def do_parse(self):
         erp_names = ['商铺(必填）', '网店订单号(必填）', '订单编号', 'ＥＲＰ码(必填）', '书号(必填）', '书名',
                      '数量（必填）', '订单价格（必填）', '实付金额', '应付金额', '发货折扣',
@@ -62,8 +81,10 @@ class Parse(object):
         try:
             result = self.read(self.filename, 'gb2312')
         except Exception as e:
-            print(e)
-            result = self.read(self.filename, 'gb18030')
+            try:
+                result = self.read(self.filename, 'gb18030')
+            except Exception as e:
+                result = self.read(self.filename, 'utf8')
 
         workbook = xlwt.Workbook()
         worksheet = workbook.add_sheet('sheet')
