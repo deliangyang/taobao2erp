@@ -28,8 +28,15 @@ class MainPanel(wx.Panel):
         shop_label = wx.StaticText(self, 0, "店铺:", style=wx.TE_LEFT)
         center_box_sizer.Add(shop_label, proportion=0, flag=wx.EXPAND | wx.ALL, border=5)
 
+        value = '38B71E5310DF46F08360D8BAC4E32E54'
+        try:
+            with open('shopId', 'r') as f:
+                value = f.read()
+                f.close()
+        except Exception as e:
+            print(e)
         self.btn = wx.Button(self, 1, "生成ERP订单")
-        self.shop_code = wx.TextCtrl(self, 1, style=wx.TE_LEFT, value='38B71E5310DF46F08360D8BAC4E32E54')
+        self.shop_code = wx.TextCtrl(self, 1, style=wx.TE_LEFT, value=value)
 
         center_box_sizer.Add(self.shop_code, proportion=1, flag=wx.ALL | wx.ALIGN_CENTER_VERTICAL,
                              border=5)
@@ -52,6 +59,11 @@ class MainPanel(wx.Panel):
         self.btn.Disable()
         self.init_status_bar()
         self.status_bar.SetStatusText(u"状态：处理中...", 0)
+
+        with open('shopId', 'w') as f:
+            f.write(self.shop_code.GetValue())
+            f.close()
+
         thread = ParseThread(
             self.dirname + os.sep + self.filename,
             self.get_storage_path(),
