@@ -43,7 +43,7 @@ class MainPanel(wx.Panel):
         self.password = wx.TextCtrl(self, 1, style=wx.TE_LEFT, value=password)
 
         self.btn = wx.Button(self, 1, "生成ERP订单")
-        self.shop_code = wx.TextCtrl(self, 1, style=wx.TE_LEFT, value='38B71E5310DF46F08360D8BAC4E32E54')
+        self.shop_code = wx.TextCtrl(self, 1, style=wx.TE_LEFT, value='77130CBC9FD64AACBC101C6055DEA5F7')
 
         center_box_sizer.Add(self.shop_code, proportion=1, flag=wx.ALL | wx.ALIGN_CENTER_VERTICAL,
                              border=5)

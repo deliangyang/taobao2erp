@@ -14,7 +14,7 @@ class ParseThread(threading.Thread):
 
     def run(self) -> None:
         try:
-            parse = Parse(self.filename, self.save_name, self.shop_code, self.password)
+            parse = Parse(self.filename, self.save_name, self.shop_code, self.password, self.cb)
             parse.do_parse()
             self.callback('处理完毕', 'done')
         except Exception as e:

@@ -1,16 +1,20 @@
 import codecs
+
 import xlwt
+import os
 import re
 import openpyxl
+import win32com.client
 
 
 class Parse(object):
 
-    def __init__(self, filename: str, save_name: str, shop_code: str, password: str):
+    def __init__(self, filename: str, save_name: str, shop_code: str, password: str, callback):
         self.filename = filename
         self.save_name = save_name
         self.shop_code = shop_code
         self.password = password
+        self.callback = callback
         self.re_extract_code = re.compile(r'\d{13}')
         self.we_need = ['订单编号', '买家实际支付金额', '收货人姓名', '收货地址', '联系手机', '宝贝总数量', '店铺名称', '宝贝标题', ]
         self.name = ['order', 'real_amount', 'username', 'address', 'mobile', 'quantity', 'shop_name', 'title',
@@ -26,11 +30,15 @@ class Parse(object):
 
     def read_excel(self, filename):
         try:
-            result = []
-            workbook = openpyxl.load_workbook(filename)
-            print(2)
-            workbook.security.workbookPassword = self.password
-            print(3)
+            app = win32com.client.Dispatch("Excel.Application")
+            workbook = app.Workbooks.Open(filename, False, True, None, Password=self.password)
+            tmp_filename = r"%s%stmp.csv" % (os.getcwd(), os.sep)
+            app.ActiveWorkbook.SaveAs(tmp_filename, 62, "", "")
+        except Exception as e:
+            raise e
+        result = self.read_csv(tmp_filename, 'utf8')
+        try:
+            os.unlink(tmp_filename)
         except Exception as e:
             print(e)
         return result

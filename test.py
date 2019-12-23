@@ -1,7 +1,12 @@
-import openpyxl
+from xlrd import *
+import win32com.client
+import csv
+import sys
 
-filename = '/Users/ydl/Downloads/ExportOrderList5217472008.xlsx'
-workbook = openpyxl.load_workbook(filename)
-print(2)
-workbook.security.workbookPassword = 'aFUAt0nH'
-print(3)
+xlApp = win32com.client.Dispatch("Excel.Application")
+filename, password = r"C:\Users\ydl\Desktop\encryptedtest.xlsx", 'encryptedtest'
+xlwb = xlApp.Workbooks.Open(filename, False, True, None, Password=password)
+print(xlwb.Sheets(1).Cells(1, 1))
+print(xlwb.Sheets(1))
+xlApp.ActiveWorkbook.SaveAs(r"C:\Users\ydl\Desktop\text233.csv", 62, "", "")
+xlApp.Quit()
