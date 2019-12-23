@@ -32,8 +32,9 @@ class Parse(object):
         try:
             app = win32com.client.Dispatch("Excel.Application")
             workbook = app.Workbooks.Open(filename, False, True, None, Password=self.password)
-            tmp_filename = r"%s%stmp.csv" % (os.getcwd(), os.sep)
+            tmp_filename = r"%s%stemp.csv" % (os.getcwd(), os.sep)
             app.ActiveWorkbook.SaveAs(tmp_filename, 62, "", "")
+            app.Quit()
         except Exception as e:
             raise e
         result = self.read_csv(tmp_filename, 'utf8')
@@ -70,6 +71,7 @@ class Parse(object):
                         temp['city'] = address[1]
                         temp['county'] = address[2]
                     result.append(temp)
+            f.close()
         return result
 
     def read(self, filename, encoding):

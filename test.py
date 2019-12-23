@@ -1,7 +1,10 @@
 from xlrd import *
 import win32com.client
 import csv
-import sys
+import sys, os
+
+tmp_filename = r"%s%stmp.csv" % (os.getcwd(), os.sep)
+os.unlink(tmp_filename)
 
 xlApp = win32com.client.Dispatch("Excel.Application")
 filename, password = r"C:\Users\ydl\Desktop\encryptedtest.xlsx", 'encryptedtest'
