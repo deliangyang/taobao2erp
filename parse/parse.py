@@ -33,6 +33,10 @@ class Parse(object):
             app = win32com.client.Dispatch("Excel.Application")
             workbook = app.Workbooks.Open(filename, False, True, None, Password=self.password)
             tmp_filename = r"%s%stemp.csv" % (os.getcwd(), os.sep)
+            try:
+                os.unlink(tmp_filename)
+            except Exception as e:
+                print(e)
             app.ActiveWorkbook.SaveAs(tmp_filename, 62, "", "")
             app.Quit()
         except Exception as e:
